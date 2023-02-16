@@ -1,0 +1,25 @@
+name: To Do checker
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  check_pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check PR
+        uses: francesco-giordano/gh-pr-content-checker@develop
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Have to double escape '\' when JS parses a string->regex
+          diffDoesNotContainRegex: "((?![^\\+\\n]*[Ss][Qq][Aa]-)[Tt][Oo][Dd][Oo])" # SQA-
+          
+      - name: Add comment
+        if: failure()
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-failure: |
+            An orphan "TODO" was detected in diff! Create a ticket and mention it on the same line, like so: `// TODO Fix this (SQA-XXXX)`

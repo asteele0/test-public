@@ -1,7 +1,7 @@
 name: To Do checker
 on:
   pull_request:
-    branches: [ develop ]
+    branches: [ main ]
 
 jobs:
   check_pr:
